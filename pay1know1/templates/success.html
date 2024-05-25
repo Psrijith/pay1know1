@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        // Disable refresh
+        window.onbeforeunload = function() {
+            return "Do you really want to leave this page?";
+        };
+
+        // Disable right-click
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Successful!</h1>
+        <div class="count-container">
+            <p>Total Successful Payments:</p>
+            <h1><div class="count">{{ count }}</div></h1>
+        </div>
+        
+        <button type="submit"><a href="/" class="go-back">Go back to Home</a></button>
+    </div>
+</body>
+</html>
