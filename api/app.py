@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate(r"./pay1know1-firebase-adminsdk-ygtp2-e3d66ef7d2.json")  
+cred = credentials.Certificate('api/pay1know1-firebase-adminsdk-ygtp2-e3d66ef7d2.json')  
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://pay1know1-default-rtdb.asia-southeast1.firebasedatabase.app/'   
 })
