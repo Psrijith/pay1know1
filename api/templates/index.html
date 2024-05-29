@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay 1 USD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+     
+</head>
+<body>
+   <div class="container">
+        <h1>Pay $1 and Know How Many Have Paids</h1>
+        <form action="/create-session" method="POST">
+            <button type="submit">Pay $1</button>
+        </form>
+        <p>USE: Card number = 4242 4242 4242 4242</p> 
+        <p>Don't use India for billing, use international.</p>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

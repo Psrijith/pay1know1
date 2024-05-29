@@ -1,3 +1,0 @@
-Flask 
-stripe 
-firebase-admin 
