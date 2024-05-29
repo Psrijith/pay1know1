@@ -16,7 +16,7 @@ db_ref = db.reference('/')
 
 stripe.api_key = 'sk_test_51PKDhjSGlv3owL3wZuw2GzKQABpylNYWGTBLMuXBSzk5cpVgFDIPzpyrPlY1PFO2CKSg97c0v1XTPLlQcNxtj71E00dzGYSM3b'
 
-load_dotenv('.env')
+#load_dotenv('.env')
 success_url = os.environ.get('success')
 cancel_url = os.environ.get('cancel')
 
