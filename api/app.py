@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, jsonify, render_template
+from flask import Flask, redirect, request, jsonify, render_template,session 
 import stripe
 import firebase_admin
 from firebase_admin import credentials, db ,firestore
@@ -16,11 +16,11 @@ db_ref = db.reference('/')
 
 stripe.api_key = 'sk_test_51PKDhjSGlv3owL3wZuw2GzKQABpylNYWGTBLMuXBSzk5cpVgFDIPzpyrPlY1PFO2CKSg97c0v1XTPLlQcNxtj71E00dzGYSM3b'
 
-#load_dotenv('.env')
 success_url = os.environ.get('success')
 cancel_url = os.environ.get('cancel')
 
 app = Flask(__name__)
+app.secret_key= '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 
 def get_successful_payments_count():
     try:
@@ -67,22 +67,26 @@ def create_session():
             success_url= success_url,
             cancel_url= cancel_url
         )
-        return redirect(checkout_session.url, code=303)
+        s = checkout_session
+        session['id'] = checkout_session.id
+        print(session['id'])
+        return redirect(checkout_session.url, code=302)
     except Exception as e:
         return jsonify(error=str(e)), 500
 
 @app.route('/payment/success')
 def payment_success():
-    try:
+    if session['id']:
+        session_id = session['id']
         increment_successful_payments_count()
-        count = get_successful_payments_count()
-        if count is not None:
-            return render_template('success.html', count=count)
-        else:
-            return render_template('success.html', count='Count retrieval failed')
-    except Exception as e:
-        app.logger.error("Error processing successful payment: %s", str(e))
-        return render_template('success.html', count='Error processing payment')
+        session.pop('id')
+    return redirect('/count')
+
+@app.route('/count')
+def countpage():
+    count = get_successful_payments_count()
+    return render_template('count.html', count=count)
+
 
 @app.route('/payment/failure')
 def payment_failure():
