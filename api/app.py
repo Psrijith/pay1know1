@@ -1,14 +1,14 @@
-from flask import Flask, redirect, request, jsonify, render_template,session 
+from flask import Flask, redirect, request, jsonify, render_template, session
 import stripe
 import firebase_admin
-from firebase_admin import credentials, db ,firestore
+from firebase_admin import credentials, db, firestore
 from dotenv import load_dotenv
 import os
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate('api/pay1know1-firebase-adminsdk-ygtp2-e3d66ef7d2.json')  
+cred = credentials.Certificate('api/pay1know1-firebase-adminsdk-ygtp2-e3d66ef7d2.json')
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://pay1know1-default-rtdb.asia-southeast1.firebasedatabase.app/'   
+    'databaseURL': 'https://pay1know1-default-rtdb.asia-southeast1.firebasedatabase.app/'
 })
 
 # Create a reference to your Firebase Realtime Database
@@ -20,7 +20,7 @@ success_url = os.environ.get('success')
 cancel_url = os.environ.get('cancel')
 
 app = Flask(__name__)
-app.secret_key= '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+app.secret_key = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 
 def get_successful_payments_count():
     try:
@@ -64,8 +64,8 @@ def create_session():
                 }
             ],
             mode='payment',
-            success_url= success_url,
-            cancel_url= cancel_url
+            success_url=success_url,
+            cancel_url=cancel_url
         )
         s = checkout_session
         session['id'] = checkout_session.id
@@ -76,17 +76,20 @@ def create_session():
 
 @app.route('/payment/success')
 def payment_success():
-    if session['id']:
+    if session.get('id'):
         session_id = session['id']
         increment_successful_payments_count()
         session.pop('id')
+        session['payment_successful'] = True  # Set a flag in the session
     return redirect('/count')
 
 @app.route('/count')
 def countpage():
+    if not session.get('payment_successful'):
+        return redirect('/')  # Redirect to home if payment was not successful
     count = get_successful_payments_count()
+    session.pop('payment_successful')  # Clear the flag after accessing the count page
     return render_template('count.html', count=count)
-
 
 @app.route('/payment/failure')
 def payment_failure():
